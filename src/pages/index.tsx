@@ -22,49 +22,21 @@ export default function Home({ toggleTheme = () => {}, isDarkTheme = true }: Hom
         <meta name="description" content={`${resumeData.personalInfo.name}'s personal resume website`} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <main style={{ 
-        maxWidth: '1200px', 
-        margin: '0.5rem auto', 
-        padding: '0 0.5rem' 
-      }}>
-        {/* Top row - Header and About */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(250px, 1fr) 2fr',
-          gap: '0.5rem',
-          marginBottom: '0.5rem'
-        }}>
+      <div className="main-responsive-layout fit-screen-layout">
+        <aside className="sidebar">
           <Header toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} />
-          <About />
-        </div>
-        
-        {/* Bottom grid - Three columns layout */}
-        <div style={{ 
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '0.5rem'
-        }}>
-          {/* Column 1 - Skills and Hobbies */}
-          <div>
+        </aside>
+        <main className="content-area fit-content-area">
+          <div className="content-grid fit-content-grid">
+            <About />
             <Skills />
-            <div style={{ marginTop: '0.5rem' }}>
-              <Hobbies />
-            </div>
-          </div>
-          
-          {/* Column 2 - Experience */}
-          <Experience />
-          
-          {/* Column 3 - Education and Projects */}
-          <div>
+            <Experience />
             <Education />
-            <div style={{ marginTop: '0.5rem' }}>
-              <Projects />
-            </div>
+            <Projects />
+            <Hobbies />
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </>
   );
 }

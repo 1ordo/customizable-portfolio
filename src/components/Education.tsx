@@ -88,10 +88,11 @@ const Education: React.FC = () => {
             ref={scrollContainerRef}
             style={{ 
               height: '100%', 
-              maxHeight: '111px', // Adjusted to account for scroll indicator
+              maxHeight: '120px', // Adjusted to ensure the scroll indicator doesn't overlap
               overflowY: 'auto',
               paddingRight: '4px',
               padding: '0.3rem',
+              paddingBottom: '24px', // Added padding to prevent overlap with the scroll indicator
               scrollbarWidth: 'thin'
             }}
           >
