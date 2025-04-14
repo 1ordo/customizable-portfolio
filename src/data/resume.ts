@@ -156,7 +156,7 @@ const resumeData: ResumeData = {
     "Public Speaking"
   ],
   availableForHire: true,
-  resumeUrl: "/Mohamed_Yousry_Resume.pdf"
+  resumeUrl: "/resume.pdf"
 };
 
 export default resumeData;
