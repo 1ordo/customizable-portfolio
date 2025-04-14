@@ -46,7 +46,7 @@ const About: React.FC = () => {
               flex: 1
             }}>
               <h3 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '0.3rem' }}>
-                AI Engineer
+                AI Engineer - Fullstack Developer
               </h3>
               <p style={{ fontSize: '0.8rem' }}>
                 Developing cutting-edge AI solutions with a focus on practical applications
