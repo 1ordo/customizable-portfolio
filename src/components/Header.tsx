@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FaSun, FaMoon, FaLinkedin, FaGithub, FaEnvelope, FaDownload } from 'react-icons/fa';
+import { FaSun, FaMoon, FaLinkedin, FaGithub, FaEnvelope, FaDownload, FaPaperclip } from 'react-icons/fa';
 import resumeData from '../data/resume';
 
 interface HeaderProps {
@@ -67,7 +67,7 @@ const Header: React.FC<HeaderProps> = ({ toggleTheme, isDarkTheme }) => {
                 download
                 style={{ flex: '1' }}
               >
-                <FaDownload style={{ fontSize: '0.7rem' }} /> Download CV
+                <FaPaperclip style={{ fontSize: '0.7rem' }} /> View & Download CV
               </a>
               
               <div style={{ display: 'flex', gap: '0.35rem' }}>

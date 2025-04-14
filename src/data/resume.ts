@@ -156,7 +156,7 @@ const resumeData: ResumeData = {
     "Public Speaking"
   ],
   availableForHire: true,
-  resumeUrl: "/resume.pdf"
+  resumeUrl: "https://drive.google.com/file/d/18TygdnntT9pW-BPGOwFcGFLawCUC-76v/view"
 };
 
 export default resumeData;
