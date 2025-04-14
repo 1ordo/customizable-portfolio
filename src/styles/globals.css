@@ -220,6 +220,21 @@ p, li {
   }
 }
 
+/* Scrollbar styles */
+.scrollable-container {
+  scrollbar-width: thin; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+}
+
+.scrollable-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.3);
+  border-radius: 4px;
+}
+
 .scrollable-container {
   position: relative;
   overflow-y: auto;

@@ -143,17 +143,17 @@ const resumeData: ResumeData = {
     "Implemented Nginx & Docker-based deployments for scalable systems"
   ],
   hobbies: [
-    { name: "Reading", icon: "book" },
-    { name: "Photography", icon: "camera" },
+    { name: "Music", icon: "music" },
+    { name: "Editing", icon: "image" },
     { name: "Programming", icon: "code" },
-    { name: "Hiking", icon: "hiking" },
+    { name: "Tech", icon: "computer" },
   ],
   unmentiondSkills: [
     "UI/UX Design basics",
-    "Technical Writing",
     "Project Management",
-    "Agile Methodologies",
-    "Public Speaking"
+    "burn garlic at 2 seconds",
+    "Better at conducting videos than making videos",
+    
   ],
   availableForHire: true,
   resumeUrl: "https://drive.google.com/file/d/18TygdnntT9pW-BPGOwFcGFLawCUC-76v/view"

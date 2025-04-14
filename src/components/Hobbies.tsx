@@ -1,16 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaBook, FaCamera, FaCode, FaHiking, FaChess, FaPlus, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaBook, FaCamera, FaCode, FaHiking, FaChess, FaPlus, FaChevronDown, FaChevronUp, FaMusic, FaImage, FaLaptop } from 'react-icons/fa';
 import resumeData from '../data/resume';
 
 const Hobbies: React.FC = () => {
   const getIcon = (iconName: string | undefined) => {
     switch (iconName) {
-      case 'book': return <FaBook />;
-      case 'camera': return <FaCamera />;
       case 'code': return <FaCode />;
-      case 'hiking': return <FaHiking />;
-      case 'chess': return <FaChess />;
+      case 'music': return <FaMusic />;
+      case 'image': return <FaImage />;
+      case 'computer': return <FaLaptop />;
       default: return <FaPlus />;
     }
   };
@@ -88,21 +87,13 @@ const Hobbies: React.FC = () => {
         }}>
           <div 
             ref={scrollContainerRef}
+            className="scrollable-container"
             style={{ 
               height: '100%', 
               maxHeight: '166px', // Adjusted to account for scroll indicator
               overflowY: 'auto',
               paddingRight: '4px',
-              padding: '0.3rem',
-              scrollbarWidth: 'thin',
-              msOverflowStyle: 'none',
-              '&::-webkit-scrollbar': {
-                width: '4px'
-              },
-              '&::-webkit-scrollbar-thumb': {
-                background: 'rgba(16, 185, 129, 0.3)',
-                borderRadius: '4px'
-              }
+              padding: '0.3rem'
             }}
           >
             <motion.div
