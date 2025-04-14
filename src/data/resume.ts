@@ -61,7 +61,7 @@ export interface ResumeData {
 const resumeData: ResumeData = {
   personalInfo: {
     name: "Mohamed Yousry",
-    title: "AI Engineer",
+    title: "AI Engineer - Fullstack Developer",
     location: "Al Manşū̄rah, Dakahlia, Egypt",
     email: "mohamedyousry.work.dev@gmail.com",
     discord: "NotLordo",
