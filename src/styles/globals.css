@@ -1,18 +1,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap');
 
 :root {
+  /* Common variables for both themes */
   --primary: #10b981; /* Emerald */
   --primary-dark: #059669; /* Darker emerald */
   --secondary: #10b981; /* Emerald */
+  --border-radius: 6px;
+  --section-padding: 12px;
+  --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Dark theme (default) */
+:root, [data-theme="dark"] {
   --background: #121212; /* Dark background */
   --background-lighter: #1f1f1f; /* Slightly lighter dark background */
   --text: #ffffff; /* White text */
   --text-light: #e0e0e0; /* Light gray text */
   --accent: #10b981; /* Emerald accent */
   --card-background: rgba(31, 31, 31, 0.8);
-  --border-radius: 6px;
-  --section-padding: 12px;
-  --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --border-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Light theme */
+[data-theme="light"] {
+  --background: #ffffff; /* White background */
+  --background-lighter: #f5f5f5; /* Light gray background */
+  --text: #121212; /* Dark text */
+  --text-light: #4a4a4a; /* Medium gray text */
+  --accent: #0a8e62; /* Keep emerald accent */
+  --card-background: rgba(245, 245, 245, 0.9);
+  --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --border-color: rgba(0, 0, 0, 0.05);
 }
 
 * {
@@ -82,7 +100,7 @@ p, li {
   margin-bottom: 0.5rem;
   box-shadow: var(--box-shadow);
   height: auto;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
 }
 
 .section-title {
@@ -180,7 +198,7 @@ p, li {
   border-radius: var(--border-radius);
   background-color: var(--card-background);
   transition: transform 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
 }
 
 .card:hover {

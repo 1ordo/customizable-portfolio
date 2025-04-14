@@ -102,7 +102,7 @@ const Skills: React.FC = () => {
         
         <div style={{ 
           position: 'relative', 
-          height: '190px',
+          height: '150px',
           overflow: 'hidden',
           borderRadius: '0.3rem',
           background: 'var(--card-background)',

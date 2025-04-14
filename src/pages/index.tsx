@@ -9,7 +9,12 @@ import Projects from '../components/Projects';
 import Hobbies from '../components/Hobbies';
 import resumeData from '../data/resume';
 
-export default function Home() {
+interface HomeProps {
+  toggleTheme?: () => void;
+  isDarkTheme?: boolean;
+}
+
+export default function Home({ toggleTheme = () => {}, isDarkTheme = true }: HomeProps) {
   return (
     <>
       <Head>
@@ -30,7 +35,7 @@ export default function Home() {
           gap: '0.5rem',
           marginBottom: '0.5rem'
         }}>
-          <Header toggleTheme={() => {}} isDarkTheme={false} />
+          <Header toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} />
           <About />
         </div>
         

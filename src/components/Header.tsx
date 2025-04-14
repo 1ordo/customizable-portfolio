@@ -86,7 +86,7 @@ const Header: React.FC<HeaderProps> = ({ toggleTheme, isDarkTheme }) => {
                   <FaEnvelope />
                 </a>
                 <a 
-                  href="https://linkedin.com" 
+                  href="https://www.linkedin.com/in/notlordo/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="icon-button"
@@ -95,7 +95,7 @@ const Header: React.FC<HeaderProps> = ({ toggleTheme, isDarkTheme }) => {
                   <FaLinkedin />
                 </a>
                 <a 
-                  href="https://github.com" 
+                  href="https://github.com/1ordo" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="icon-button"

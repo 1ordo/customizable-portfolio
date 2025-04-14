@@ -3,6 +3,7 @@ export interface PersonalInfo {
   title: string;
   location: string;
   email: string;
+  discord: string;
   phone: string;
 }
 
@@ -63,7 +64,8 @@ const resumeData: ResumeData = {
     title: "AI Engineer",
     location: "Al Manşū̄rah, Dakahlia, Egypt",
     email: "mohamedyousry.work.dev@gmail.com",
-    phone: "+201003204931"
+    discord: "NotLordo",
+    phone: "+201003204931",
   },
   personalSkills: [
     { name: "Problem-Solving" },
@@ -145,7 +147,6 @@ const resumeData: ResumeData = {
     { name: "Photography", icon: "camera" },
     { name: "Programming", icon: "code" },
     { name: "Hiking", icon: "hiking" },
-    { name: "Chess", icon: "chess" }
   ],
   unmentiondSkills: [
     "UI/UX Design basics",

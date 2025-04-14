@@ -14,7 +14,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   useEffect(() => {
     // Check if user has a theme preference in localStorage
     const savedTheme = localStorage.getItem('theme') as ThemeName;
-    if (savedTheme) {
+    if (savedTheme && (savedTheme === 'dark' || savedTheme === 'light')) {
       setTheme(savedTheme);
     } else {
       // Check for system preference if no saved preference
@@ -27,27 +27,34 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     // Apply theme to document root element
     document.documentElement.setAttribute('data-theme', theme);
     
-    // Apply theme-specific CSS variables
-    const rootStyle = document.documentElement.style;
-    if (theme === 'dark') {
-      rootStyle.setProperty('--background', '#121212');
-      rootStyle.setProperty('--background-lighter', '#1f1f1f');
-      rootStyle.setProperty('--text', '#ffffff');
-      rootStyle.setProperty('--text-light', '#e0e0e0');
-    } else {
-      rootStyle.setProperty('--background', '#ffffff');
-      rootStyle.setProperty('--background-lighter', '#f5f5f5');
-      rootStyle.setProperty('--text', '#121212');
-      rootStyle.setProperty('--text-light', '#4a4a4a');
-    }
+    // Also apply theme to the body element for extra compatibility
+    document.body.classList.remove('dark-theme', 'light-theme');
+    document.body.classList.add(`${theme}-theme`);
     
     // Save theme preference to localStorage
     localStorage.setItem('theme', theme);
+    
+    console.log('Theme changed to:', theme); // Debug log
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    console.log('Toggling theme from', theme, 'to', newTheme); // Debug log
+    setTheme(newTheme);
   };
+
+  // Clone children with theme props
+  const childrenWithProps = React.Children.map(children, child => {
+    // Check if the child is a valid React element
+    if (React.isValidElement<{ toggleTheme?: () => void; isDarkTheme?: boolean }>(child)) {
+      // Pass the props to the child element
+      return React.cloneElement(child, { 
+        toggleTheme, 
+        isDarkTheme: theme === 'dark' 
+      });
+    }
+    return child;
+  });
 
   return (
     <>
@@ -64,14 +71,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         transition={{ duration: 0.5 }}
         className="main-container"
       >
-        {React.Children.map(children, (child) => {
-          if (React.isValidElement(child)) {
-            return React.cloneElement(child, { toggleTheme, isDarkTheme: theme === 'dark' } as any);
-          }
-          return child;
-        })}
-
-        
+        {childrenWithProps}
       </motion.div>
     </>
   );
