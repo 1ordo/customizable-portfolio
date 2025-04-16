@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 interface AboutProps {
   id: string;
@@ -19,6 +20,7 @@ const About: React.FC<AboutProps> = ({
   onClick 
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [isAtBottom, setIsAtBottom] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
   
   useEffect(() => {
@@ -31,13 +33,35 @@ const About: React.FC<AboutProps> = ({
       container.classList.toggle('has-overflow', hasContentOverflow);
     };
     
+    const handleScroll = () => {
+      if (!container) return;
+      const isBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 10;
+      setIsAtBottom(isBottom);
+    };
+    
     checkForOverflow();
+    handleScroll();
+    container.addEventListener('scroll', handleScroll);
     window.addEventListener('resize', checkForOverflow);
     
     return () => {
+      container.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', checkForOverflow);
     };
-  }, [isActive]); // Re-run when active state changes
+  }, [isActive]);
+
+  const handleScrollIndicatorClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    if (isAtBottom) {
+      container.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      const newPosition = container.scrollTop + 60;
+      container.scrollTo({ top: newPosition, behavior: 'smooth' });
+    }
+  };
 
   return (
     <motion.section 
@@ -85,6 +109,7 @@ const About: React.FC<AboutProps> = ({
           paddingRight: !isActive ? '0.4rem' : '0',
           minHeight: isActive ? '200px' : '90px',
           maxHeight: isActive ? '500px' : '220px',
+          paddingBottom: hasOverflow ? '28px' : '0',
           transition: 'all 0.3s ease'
         }}
       >
@@ -151,6 +176,19 @@ const About: React.FC<AboutProps> = ({
           </div>
         </motion.div>
       </div>
+      
+      {/* Modern scroll indicator */}
+      {hasOverflow && (
+        <div className="scroll-indicator" onClick={handleScrollIndicatorClick} style={{ cursor: 'pointer' }}>
+          <motion.div
+            animate={{ y: [0, 3, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}
+          >
+            {isAtBottom ? <FaChevronUp size={16} /> : <FaChevronDown size={16} />}
+          </motion.div>
+        </div>
+      )}
     </motion.section>
   );
 };

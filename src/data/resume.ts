@@ -114,7 +114,7 @@ const resumeData: ResumeData = {
       institution: "British Council",
       location: "Egypt",
       year: "2022",
-      description: ""
+      description: "C1 Level"
     }
   ],
   experiences: [

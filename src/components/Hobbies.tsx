@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { FaMusic, FaImage, FaCode, FaLaptop, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import resumeData from '../data/resume';
-import { FaMusic, FaImage, FaCode, FaLaptop } from 'react-icons/fa';
 
 interface HobbiesProps {
   id: string;
@@ -23,6 +23,7 @@ const Hobbies: React.FC<HobbiesProps> = ({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [hasOverflow, setHasOverflow] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(false);
   
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -31,22 +32,45 @@ const Hobbies: React.FC<HobbiesProps> = ({
     const checkForOverflow = () => {
       const hasContentOverflow = container.scrollHeight > container.clientHeight + 5;
       setHasOverflow(hasContentOverflow);
+      container.classList.toggle('has-overflow', hasContentOverflow);
     };
     
     const checkForMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
+
+    const handleScroll = () => {
+      if (!container) return;
+      const isBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 10;
+      setIsAtBottom(isBottom);
+    };
     
     checkForOverflow();
     checkForMobile();
+    handleScroll();
+    container.addEventListener('scroll', handleScroll);
     window.addEventListener('resize', checkForOverflow);
     window.addEventListener('resize', checkForMobile);
     
     return () => {
+      container.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', checkForOverflow);
       window.removeEventListener('resize', checkForMobile);
     };
   }, [isActive]); // Re-run when active state changes
+
+  const handleScrollIndicatorClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    if (isAtBottom) {
+      container.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      const newPosition = container.scrollTop + 60;
+      container.scrollTo({ top: newPosition, behavior: 'smooth' });
+    }
+  };
 
   // Function to get icon component based on icon name
   const getIcon = (iconName: string | undefined) => {
@@ -135,6 +159,7 @@ const Hobbies: React.FC<HobbiesProps> = ({
           overflowY: 'auto', 
           height: 'auto',
           flex: 1, // Take up remaining space
+          paddingBottom: hasOverflow ? '28px' : '0',
           transition: 'all 0.3s ease'
         }}
       >
@@ -221,6 +246,19 @@ const Hobbies: React.FC<HobbiesProps> = ({
           ))}
         </div>
       </div>
+
+      {/* Modern scroll indicator */}
+      {hasOverflow && (
+        <div className="scroll-indicator" onClick={handleScrollIndicatorClick} style={{ cursor: 'pointer' }}>
+          <motion.div
+            animate={{ y: [0, 3, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}
+          >
+            {isAtBottom ? <FaChevronUp size={16} /> : <FaChevronDown size={16} />}
+          </motion.div>
+        </div>
+      )}
     </motion.section>
   );
 };
