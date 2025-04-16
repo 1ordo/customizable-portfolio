@@ -52,7 +52,7 @@ export interface ResumeData {
   experiences: Experience[];
   projects: string[];
   hobbies: Hobby[];
-  unmentiondSkills: string[];
+  unmentiondSkills: { skill: string; emoji: string; level: number }[];
   availableForHire: boolean;
   resumeUrl: string;
 }
@@ -108,6 +108,13 @@ const resumeData: ResumeData = {
       location: "Egypt",
       year: "2026",
       description: "Studying AI Engineering with a focus on machine learning, deep learning, and software development."
+    },
+    {
+      degree: "IELTS Academic",
+      institution: "British Council",
+      location: "Egypt",
+      year: "2022",
+      description: ""
     }
   ],
   experiences: [
@@ -149,11 +156,11 @@ const resumeData: ResumeData = {
     { name: "Tech", icon: "computer" },
   ],
   unmentiondSkills: [
-    "UI/UX Design basics",
-    "Project Management",
-    "burn garlic at 2 seconds",
-    "Better at conducting videos than making videos",
-    
+    { skill: "UI/UX Design basics", emoji: "🎨", level: 3 },
+    { skill: "Project Management", emoji: "📊", level: 4 },
+    { skill: "Burn garlic at 2 seconds", emoji: "🧄", level: 5 },
+    { skill: "Better at conducting videos than making videos", emoji: "🎬", level: 2 },
+    { skill: "Finding bugs in production", emoji: "🐛", level: 4 }
   ],
   availableForHire: true,
   resumeUrl: "https://drive.google.com/file/d/18TygdnntT9pW-BPGOwFcGFLawCUC-76v/view"

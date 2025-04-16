@@ -1,18 +1,96 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
-const About: React.FC = () => {
+interface AboutProps {
+  id: string;
+  isActive: boolean;
+  isPrevious: boolean;
+  initialPosition: string;
+  targetPosition: string;
+  onClick: () => void;
+}
+
+const About: React.FC<AboutProps> = ({ 
+  id, 
+  isActive, 
+  isPrevious, 
+  initialPosition, 
+  targetPosition, 
+  onClick 
+}) => {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [hasOverflow, setHasOverflow] = useState(false);
+  
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    
+    const checkForOverflow = () => {
+      const hasContentOverflow = container.scrollHeight > container.clientHeight + 5;
+      setHasOverflow(hasContentOverflow);
+      container.classList.toggle('has-overflow', hasContentOverflow);
+    };
+    
+    checkForOverflow();
+    window.addEventListener('resize', checkForOverflow);
+    
+    return () => {
+      window.removeEventListener('resize', checkForOverflow);
+    };
+  }, [isActive]); // Re-run when active state changes
+
   return (
-    <section id="about" className="section" style={{ padding: '1.25rem', height: '100%' }}>
-      <div className="container">
-        <h2 className="section-title">About Me</h2>
-        
+    <motion.section 
+      id="about" 
+      className={`section section-about ${isActive ? 'section-active' : ''}`}
+      onClick={onClick}
+      layout
+      transition={{
+        type: "spring",
+        stiffness: 350,
+        damping: 30,
+        duration: 0.4
+      }}
+      style={{ 
+        gridArea: targetPosition,
+        padding: '0.7rem',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+        cursor: 'pointer',
+      }}
+      initial={false}
+      animate={{
+        scale: isActive ? 1.02 : 1,
+        zIndex: isActive ? 2 : 1,
+        boxShadow: isActive 
+          ? '0 16px 48px 0 rgba(16,185,129,0.22), 0 2px 16px 0 rgba(0,0,0,0.13)' 
+          : '0 2px 4px rgba(0, 0, 0, 0.2)'
+      }}
+      whileHover={{ 
+        boxShadow: isActive 
+          ? '0 16px 48px 0 rgba(16,185,129,0.22), 0 2px 16px 0 rgba(0,0,0,0.13)' 
+          : '0 4px 8px rgba(0, 0, 0, 0.15)' 
+      }}
+    >
+      <h2 className="section-title" style={{ marginBottom: '0.7rem' }}>About Me</h2>
+      
+      <div 
+        ref={scrollContainerRef}
+        className="scrollable-container"
+        style={{ 
+          overflowY: !isActive ? 'auto' : 'visible',
+          height: 'auto',
+          flex: 1,
+          paddingRight: !isActive ? '0.4rem' : '0',
+          minHeight: isActive ? '200px' : '90px',
+          maxHeight: isActive ? '500px' : '220px',
+          transition: 'all 0.3s ease'
+        }}
+      >
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          viewport={{ once: true }}
-          style={{ lineHeight: 1.6, fontSize: '0.9rem' }}
+          layout
+          style={{ lineHeight: 1.6, fontSize: isActive ? '1rem' : '0.9rem', transition: 'all 0.3s ease' }}
         >
           <p style={{ marginBottom: '0.75rem' }}>
             I am a passionate AI Engineer with expertise in developing intelligent systems and solutions.
@@ -34,21 +112,22 @@ const About: React.FC = () => {
           <div style={{ 
             display: 'flex', 
             flexWrap: 'wrap', 
-            gap: '0.5rem',
+            gap: '0.6rem', // Increased spacing
             marginTop: '1rem' 
           }}>
             <div style={{
               backgroundColor: 'rgba(16, 185, 129, 0.1)',
               border: '1px solid var(--accent)',
               borderRadius: 'var(--border-radius)',
-              padding: '0.5rem 0.75rem',
-              fontSize: '0.85rem',
-              flex: 1
+              padding: '0.6rem 0.8rem', // Increased padding
+              fontSize: isActive ? '0.95rem' : '0.85rem',
+              flex: 1,
+              transition: 'all 0.3s ease'
             }}>
-              <h3 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '0.3rem' }}>
+              <h3 style={{ fontSize: isActive ? '1rem' : '0.9rem', color: 'var(--accent)', marginBottom: '0.4rem', transition: 'all 0.3s ease' }}>
                 AI Engineer - Fullstack Developer
               </h3>
-              <p style={{ fontSize: '0.8rem' }}>
+              <p style={{ fontSize: isActive ? '0.9rem' : '0.8rem', transition: 'all 0.3s ease' }}>
                 Developing cutting-edge AI solutions with a focus on practical applications
               </p>
             </div>
@@ -57,21 +136,22 @@ const About: React.FC = () => {
               backgroundColor: 'rgba(16, 185, 129, 0.1)',
               border: '1px solid var(--accent)',
               borderRadius: 'var(--border-radius)',
-              padding: '0.5rem 0.75rem',
-              fontSize: '0.85rem',
-              flex: 1
+              padding: '0.6rem 0.8rem', // Increased padding
+              fontSize: isActive ? '0.95rem' : '0.85rem',
+              flex: 1,
+              transition: 'all 0.3s ease'
             }}>
-              <h3 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '0.3rem' }}>
+              <h3 style={{ fontSize: isActive ? '1rem' : '0.9rem', color: 'var(--accent)', marginBottom: '0.4rem', transition: 'all 0.3s ease' }}>
                 Backend Developer
               </h3>
-              <p style={{ fontSize: '0.8rem' }}>
+              <p style={{ fontSize: isActive ? '0.9rem' : '0.8rem', transition: 'all 0.3s ease' }}>
                 Building reliable, scalable systems with modern architecture patterns
               </p>
             </div>
           </div>
         </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 

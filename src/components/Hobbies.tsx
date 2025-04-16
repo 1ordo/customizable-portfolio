@@ -1,22 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaBook, FaCamera, FaCode, FaHiking, FaChess, FaPlus, FaChevronDown, FaChevronUp, FaMusic, FaImage, FaLaptop } from 'react-icons/fa';
 import resumeData from '../data/resume';
+import { FaMusic, FaImage, FaCode, FaLaptop } from 'react-icons/fa';
 
-const Hobbies: React.FC = () => {
-  const getIcon = (iconName: string | undefined) => {
-    switch (iconName) {
-      case 'code': return <FaCode />;
-      case 'music': return <FaMusic />;
-      case 'image': return <FaImage />;
-      case 'computer': return <FaLaptop />;
-      default: return <FaPlus />;
-    }
-  };
+interface HobbiesProps {
+  id: string;
+  isActive: boolean;
+  isPrevious: boolean;
+  initialPosition: string;
+  targetPosition: string;
+  onClick: () => void;
+}
 
+const Hobbies: React.FC<HobbiesProps> = ({ 
+  id, 
+  isActive, 
+  isPrevious, 
+  initialPosition, 
+  targetPosition, 
+  onClick 
+}) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [isAtBottom, setIsAtBottom] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -25,195 +31,197 @@ const Hobbies: React.FC = () => {
     const checkForOverflow = () => {
       const hasContentOverflow = container.scrollHeight > container.clientHeight + 5;
       setHasOverflow(hasContentOverflow);
-      container.classList.toggle('has-overflow', hasContentOverflow);
     };
     
-    const handleScroll = () => {
-      if (!container) return;
-      
-      const isBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 10;
-      setIsAtBottom(isBottom);
+    const checkForMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
     };
     
     checkForOverflow();
-    handleScroll(); // Initialize state
-    container.addEventListener('scroll', handleScroll);
+    checkForMobile();
     window.addEventListener('resize', checkForOverflow);
+    window.addEventListener('resize', checkForMobile);
     
     return () => {
-      container.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', checkForOverflow);
+      window.removeEventListener('resize', checkForMobile);
     };
-  }, []);
-  
-  const handleScrollIndicatorClick = () => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
+  }, [isActive]); // Re-run when active state changes
+
+  // Function to get icon component based on icon name
+  const getIcon = (iconName: string | undefined) => {
+    if (!iconName) return null;
     
-    if (isAtBottom) {
-      container.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      const newPosition = container.scrollTop + 60;
-      container.scrollTo({ top: newPosition, behavior: 'smooth' });
+    switch (iconName) {
+      case 'music': return <FaMusic />;
+      case 'image': return <FaImage />;
+      case 'code': return <FaCode />;
+      case 'computer': return <FaLaptop />;
+      default: return null;
     }
   };
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.05
-      }
+  // Function to render skill level with emoji indicators
+  const renderSkillLevel = (level: number, maxLevel: number = 5, emoji: string) => {
+    const indicators = [];
+    for (let i = 1; i <= maxLevel; i++) {
+      indicators.push(
+        <span 
+          key={i} 
+          style={{ 
+            opacity: i <= level ? 1 : 0.25,
+            marginLeft: '2px',
+            filter: i <= level ? 'none' : 'grayscale(100%)'
+          }}
+        >
+          {emoji}
+        </span>
+      );
     }
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 10 },
-    show: { opacity: 1, y: 0 }
+    return indicators;
   };
 
   return (
-    <section id="hobbies" className="section" style={{ padding: '0.75rem', height: 'auto' }}>
-      <div className="container" style={{ padding: 0 }}>
-        <h2 className="section-title" style={{ marginBottom: '0.5rem' }}>Hobbies & Interests</h2>
-
-        <div style={{ 
-          position: 'relative', 
-          height: '150px',
-          overflow: 'hidden',
-          borderRadius: '0.3rem',
-          background: 'var(--card-background)',
-        }}>
-          <div 
-            ref={scrollContainerRef}
-            className="scrollable-container"
-            style={{ 
-              height: '100%', 
-              maxHeight: '166px', // Adjusted to account for scroll indicator
-              overflowY: 'auto',
-              paddingRight: '4px',
-              padding: '0.3rem'
-            }}
-          >
-            <motion.div
-              variants={container}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(4, 1fr)',
-                gap: '0.5rem',
-                marginBottom: '0.75rem'
-              }}
-            >
-              {resumeData.hobbies.map((hobby, index) => (
-                <motion.div
-                  key={index}
-                  variants={item}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    padding: '0.35rem 0.2rem',
-                    borderRadius: '0.4rem',
-                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                    border: '1px solid var(--primary)',
-                    textAlign: 'center'
-                  }}
-                >
-                  <div style={{
-                    fontSize: '0.9rem',
-                    color: 'var(--primary)',
-                    marginBottom: '0.2rem'
-                  }}>
-                    {getIcon(hobby.icon)}
-                  </div>
-                  <span style={{ fontSize: '0.65rem' }}>{hobby.name}</span>
-                </motion.div>
-              ))}
-            </motion.div>
-
-            <h3 style={{ 
-              marginBottom: '0.4rem', 
-              color: 'var(--secondary)',
-              fontSize: '0.85rem'
-            }}>Additional Skills</h3>
-            <motion.div
-              variants={container}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-            >
-              <div style={{ 
-                display: 'flex', 
-                flexWrap: 'wrap', 
-                gap: '0.3rem' 
-              }}>
-                {resumeData.unmentiondSkills.map((skill, index) => (
-                  <motion.span
-                    key={index}
-                    variants={item}
-                    className="skill-tag"
-                    style={{ 
-                      backgroundColor: 'rgba(16, 185, 129, 0.1)', 
-                      border: '1px solid rgba(16, 185, 129, 0.3)',
-                      fontSize: '0.7rem',
-                      padding: '0.1rem 0.4rem'
-                    }}
-                  >
-                    {skill}
-                  </motion.span>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-          
-          {/* Floating scroll indicator */}
-          {hasOverflow && (
-            <motion.div 
-              style={{ 
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: '24px',
-                backgroundColor: 'var(--card-background)',
-                borderTop: '1px solid rgba(16, 185, 129, 0.1)',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                cursor: 'pointer',
-                zIndex: 100,
-                boxShadow: '0 -4px 6px -2px rgba(0, 0, 0, 0.05)'
-              }}
-              onClick={handleScrollIndicatorClick}
-            >
-              <motion.div
-                animate={{
-                  y: [0, 3, 0],
-                }}
-                transition={{ 
-                  repeat: Infinity, 
-                  duration: 1.5 
-                }}
+    <motion.section 
+      id="hobbies" 
+      className={`section section-hobbies ${isActive ? 'section-active' : ''}`}
+      onClick={isMobile ? undefined : onClick}
+      layout
+      transition={{
+        type: "spring",
+        stiffness: 350,
+        damping: 30,
+        duration: 0.4
+      }}
+      style={{ 
+        gridArea: targetPosition,
+        padding: '0.7rem',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+        cursor: isMobile ? 'default' : 'pointer',
+        overflow: 'hidden',
+        height: '100%', // Match height of other components
+        width: '100%', // Match width of other components
+        transition: 'all 0.3s ease'
+      }}
+      initial={false}
+      animate={{
+        scale: isMobile ? 1 : (isActive ? 1.02 : 1),
+        zIndex: isActive ? 2 : 1,
+        boxShadow: isActive && !isMobile 
+          ? '0 16px 48px 0 rgba(16,185,129,0.22), 0 2px 16px 0 rgba(0,0,0,0.13)' 
+          : '0 2px 4px rgba(0, 0, 0, 0.2)'
+      }}
+      whileHover={isMobile ? {} : { 
+        boxShadow: isActive 
+          ? '0 16px 48px 0 rgba(16,185,129,0.22), 0 2px 16px 0 rgba(0,0,0,0.13)' 
+          : '0 4px 8px rgba(0, 0, 0, 0.15)' 
+      }}
+    >
+      <h2 className="section-title" style={{ 
+        marginBottom: '0.8rem', 
+        fontSize: isActive && !isMobile ? '1.1rem' : '1rem',
+        transition: 'all 0.3s ease'
+      }}>
+        Hobbies & Other Skills
+      </h2>
+      <div 
+        ref={scrollContainerRef}
+        className={`scrollable-container ${!hasOverflow ? 'no-scroll' : ''}`}
+        style={{ 
+          minHeight: isActive && !isMobile ? '250px' : '100%',
+          maxHeight: isActive && !isMobile ? '500px' : '100%',
+          overflowY: 'auto', 
+          height: 'auto',
+          flex: 1, // Take up remaining space
+          transition: 'all 0.3s ease'
+        }}
+      >
+        {/* Interests section */}
+        <div style={{ marginBottom: '1.2rem' }}>
+          <div style={{ 
+            display: 'flex', 
+            flexWrap: 'wrap', 
+            gap: '0.8rem',
+            justifyContent: 'flex-start'
+          }}>
+            {resumeData.hobbies.map((hobby, index) => (
+              <motion.div 
+                key={index}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.05, duration: 0.3 }}
+                viewport={{ once: true }}
                 style={{
-                  color: 'var(--accent)', 
+                  padding: isActive && !isMobile ? '0.6rem 0.8rem' : '0.5rem 0.7rem',
+                  backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                  borderRadius: 'var(--border-radius)',
+                  fontSize: isActive && !isMobile ? '0.95rem' : '0.85rem',
+                  border: '1px solid rgba(16, 185, 129, 0.15)',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '100%',
-                  height: '100%'
+                  gap: '0.5rem',
+                  transition: 'all 0.3s ease'
                 }}
               >
-                {isAtBottom ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
+                {hobby.icon && (
+                  <span style={{ 
+                    fontSize: isActive && !isMobile ? '1.1rem' : '0.9rem', 
+                    transition: 'all 0.3s ease' 
+                  }}>
+                    {getIcon(hobby.icon)}
+                  </span>
+                )}
+                {hobby.name}
               </motion.div>
+            ))}
+          </div>
+        </div>
+        
+        {/* Unmentioned skills section */}
+        <div>
+          {resumeData.unmentiondSkills.map((skill, index) => (
+            <motion.div 
+              key={index}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1, duration: 0.3 }}
+              viewport={{ once: true }}
+              style={{
+                padding: '0.7rem',
+                backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                borderRadius: 'var(--border-radius)',
+                fontSize: isActive && !isMobile ? '0.95rem' : '0.8rem',
+                border: '1px solid rgba(16, 185, 129, 0.1)',
+                marginBottom: '0.7rem',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <span style={{ 
+                    fontSize: isActive && !isMobile ? '1.25rem' : '1rem', 
+                    transition: 'all 0.3s ease' 
+                  }}>
+                    {skill.emoji}
+                  </span>
+                  <span>{skill.skill}</span>
+                </div>
+                <div style={{ 
+                  fontSize: isActive && !isMobile ? '0.95rem' : '0.8rem',
+                  marginLeft: '0.6rem',
+                  letterSpacing: '1px',
+                  transition: 'all 0.3s ease'
+                }}>
+                  {renderSkillLevel(skill.level, 5, skill.emoji)}
+                </div>
+              </div>
             </motion.div>
-          )}
+          ))}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 

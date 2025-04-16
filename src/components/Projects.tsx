@@ -1,13 +1,29 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaStar, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import resumeData from '../data/resume';
 
-const Projects: React.FC = () => {
+interface ProjectsProps {
+  id: string;
+  isActive: boolean;
+  isPrevious: boolean;
+  initialPosition: string;
+  targetPosition: string;
+  onClick: () => void;
+}
+
+const Projects: React.FC<ProjectsProps> = ({ 
+  id, 
+  isActive, 
+  isPrevious, 
+  initialPosition, 
+  targetPosition, 
+  onClick 
+}) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isAtBottom, setIsAtBottom] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
-  
+
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -20,14 +36,12 @@ const Projects: React.FC = () => {
     
     const handleScroll = () => {
       if (!container) return;
-      
-      // Check if scrolled to bottom
       const isBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 10;
       setIsAtBottom(isBottom);
     };
     
     checkForOverflow();
-    handleScroll(); // Initialize state
+    handleScroll();
     container.addEventListener('scroll', handleScroll);
     window.addEventListener('resize', checkForOverflow);
     
@@ -35,137 +49,104 @@ const Projects: React.FC = () => {
       container.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', checkForOverflow);
     };
-  }, []);
-  
-  const handleScrollIndicatorClick = () => {
+  }, [isActive]); // Re-run when active state changes
+
+  const handleScrollIndicatorClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering parent onClick
+    
     const container = scrollContainerRef.current;
     if (!container) return;
-    
     if (isAtBottom) {
-      // If at bottom, scroll to top
       container.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      // If not at bottom, scroll down a bit
       const newPosition = container.scrollTop + 60;
       container.scrollTo({ top: newPosition, behavior: 'smooth' });
     }
   };
-  
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.05
-      }
-    }
-  };
-  
-  const item = {
-    hidden: { opacity: 0, y: 10 },
-    show: { opacity: 1, y: 0 }
-  };
 
   return (
-    <section id="projects" className="section" style={{ padding: '0.65rem', height: 'auto' }}>
-      <div className="container" style={{ padding: 0 }}>
-        <h2 className="section-title" style={{ marginBottom: '0.4rem', fontSize: '0.95rem' }}>Projects & Achievements</h2>
-        
-        <div style={{ 
-          position: 'relative', 
-          height: '169px',
-          overflow: 'hidden',
-          borderRadius: '0.3rem',
-          background: 'var(--card-background)',
-        }}>
-          <div 
-            ref={scrollContainerRef}
-            style={{ 
-              height: '100%', 
-              maxHeight: '150px',
-              overflowY: 'auto',
-              padding: '0.3rem',
-              scrollbarWidth: 'thin'
-            }}
-          >
-            <motion.ul
-              variants={container}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              style={{ listStyleType: 'none', padding: 0, margin: 0 }}
-            >
-              {resumeData.projects.map((project, index) => (
-                <motion.li
-                  key={index}
-                  variants={item}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '0.5rem',
-                    marginBottom: '0.4rem',
-                    padding: '0.3rem 0.4rem',
-                    borderRadius: '0.3rem',
-                    background: 'rgba(16, 185, 129, 0.1)',
-                    fontSize: '0.75rem'
-                  }}
-                >
-                  <FaStar style={{ 
-                    color: 'var(--accent)', 
-                    marginTop: '0.1rem', 
-                    flexShrink: 0,
-                    fontSize: '0.7rem'
-                  }} />
-                  <span>{project}</span>
-                </motion.li>
-              ))}
-            </motion.ul>
-          </div>
-          
-          {/* Floating scroll indicator */}
-          {hasOverflow && (
+    <motion.section 
+      id="projects" 
+      className={`section section-projects ${isActive ? 'section-active' : ''}`}
+      onClick={onClick}
+      layout
+      transition={{
+        type: "spring",
+        stiffness: 350,
+        damping: 30,
+        duration: 0.4
+      }}
+      style={{ 
+        gridArea: targetPosition,
+        padding: '0.7rem',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+        cursor: 'pointer'
+      }}
+      initial={false}
+      animate={{
+        scale: isActive ? 1.02 : 1,
+        zIndex: isActive ? 2 : 1,
+        boxShadow: isActive 
+          ? '0 16px 48px 0 rgba(16,185,129,0.22), 0 2px 16px 0 rgba(0,0,0,0.13)' 
+          : '0 2px 4px rgba(0, 0, 0, 0.2)'
+      }}
+      whileHover={{ 
+        boxShadow: isActive 
+          ? '0 16px 48px 0 rgba(16,185,129,0.22), 0 2px 16px 0 rgba(0,0,0,0.13)' 
+          : '0 4px 8px rgba(0, 0, 0, 0.15)' 
+      }}
+    >
+      <h2 className="section-title" style={{ marginBottom: '0.7rem' }}>Projects</h2>
+      <div 
+        ref={scrollContainerRef}
+        className="scrollable-container"
+        style={{ 
+          minHeight: isActive ? '200px' : '110px',
+          maxHeight: isActive ? '500px' : '180px',
+          overflowY: 'auto', 
+          height: 'auto',
+          paddingBottom: hasOverflow ? '28px' : '0',
+          transition: 'all 0.3s ease'
+        }}
+      >
+        <div style={{ marginTop: '0.2rem' }}>
+          {resumeData.projects.map((project, index) => (
             <motion.div 
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1, duration: 0.3 }}
+              viewport={{ once: true }}
               style={{ 
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: '24px',
-                backgroundColor: 'var(--card-background)',
-                borderTop: '1px solid rgba(16, 185, 129, 0.1)',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                cursor: 'pointer',
-                zIndex: 100,
-                boxShadow: '0 -4px 6px -2px rgba(0, 0, 0, 0.05)'
+                marginBottom: '0.9rem', // Increased margin
+                padding: '0.6rem', // Increased padding
+                border: '1px solid rgba(16, 185, 129, 0.2)',
+                borderRadius: 'var(--border-radius)',
+                backgroundColor: 'rgba(16, 185, 129, 0.03)'
               }}
-              onClick={handleScrollIndicatorClick}
             >
-              <motion.div
-                animate={{
-                  y: [0, 3, 0],
-                }}
-                transition={{ 
-                  repeat: Infinity, 
-                  duration: 1.5 
-                }}
-                style={{
-                  color: 'var(--accent)', 
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '100%',
-                  height: '100%'
-                }}
-              >
-                {isAtBottom ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
-              </motion.div>
+              <p style={{ fontSize: isActive ? '0.9rem' : '0.75rem', lineHeight: '1.5', transition: 'all 0.3s ease' }}>
+                {project}
+              </p>
             </motion.div>
-          )}
+          ))}
         </div>
       </div>
-    </section>
+      {/* Modern scroll indicator - only show if needed */}
+      {hasOverflow && (
+        <div className="scroll-indicator" onClick={handleScrollIndicatorClick} style={{ cursor: 'pointer' }}>
+          <motion.div
+            animate={{ y: [0, 3, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}
+          >
+            {isAtBottom ? <FaChevronUp size={16} /> : <FaChevronDown size={16} />}
+          </motion.div>
+        </div>
+      )}
+    </motion.section>
   );
 };
 

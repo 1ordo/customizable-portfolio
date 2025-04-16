@@ -3,7 +3,23 @@ import { motion } from 'framer-motion';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import resumeData from '../data/resume';
 
-const Skills: React.FC = () => {
+interface SkillsProps {
+  id: string;
+  isActive: boolean;
+  isPrevious: boolean;
+  initialPosition: string;
+  targetPosition: string;
+  onClick: () => void;
+}
+
+const Skills: React.FC<SkillsProps> = ({ 
+  id, 
+  isActive, 
+  isPrevious, 
+  initialPosition, 
+  targetPosition, 
+  onClick 
+}) => {
   const { skills, personalSkills } = resumeData;
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isAtBottom, setIsAtBottom] = useState(false);
@@ -12,25 +28,29 @@ const Skills: React.FC = () => {
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
+    
     const checkForOverflow = () => {
       const hasContentOverflow = container.scrollHeight > container.clientHeight + 5;
       setHasOverflow(hasContentOverflow);
       container.classList.toggle('has-overflow', hasContentOverflow);
     };
+    
     const handleScroll = () => {
       if (!container) return;
       const isBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 10;
       setIsAtBottom(isBottom);
     };
+    
     checkForOverflow();
     handleScroll();
     container.addEventListener('scroll', handleScroll);
     window.addEventListener('resize', checkForOverflow);
+    
     return () => {
       container.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', checkForOverflow);
     };
-  }, []);
+  }, [isActive]); // Re-run when active state changes
 
   const handleScrollIndicatorClick = () => {
     const container = scrollContainerRef.current;
@@ -52,21 +72,24 @@ const Skills: React.FC = () => {
       }
     }
   };
+
   const item = {
     hidden: { opacity: 0, y: 10 },
     show: { opacity: 1, y: 0 }
   };
+  
   const renderSkillBar = (skillName: string, proficiency: number) => (
     <div style={{ marginBottom: '0.3rem', width: '100%' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.1rem' }}>
-        <span style={{ fontSize: '0.7rem' }}>{skillName}</span>
-        <span style={{ fontSize: '0.7rem', color: 'var(--primary)' }}>{proficiency}%</span>
+        <span style={{ fontSize: isActive ? '0.85rem' : '0.7rem', transition: 'all 0.3s ease' }}>{skillName}</span>
+        <span style={{ fontSize: isActive ? '0.85rem' : '0.7rem', color: 'var(--primary)', transition: 'all 0.3s ease' }}>{proficiency}%</span>
       </div>
       <div style={{ 
-        height: '5px', 
+        height: isActive ? '6px' : '5px', 
         backgroundColor: 'rgba(255, 255, 255, 0.1)', 
         borderRadius: '3px',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        transition: 'all 0.3s ease'
       }}>
         <motion.div 
           initial={{ width: 0 }}
@@ -84,16 +107,61 @@ const Skills: React.FC = () => {
   );
 
   return (
-    <section id="skills" className="section" style={{ padding: '0.7rem', minHeight: 0, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+    <motion.section 
+      id="skills" 
+      className={`section section-skills ${isActive ? 'section-active' : ''}`}
+      onClick={onClick}
+      layout
+      transition={{
+        type: "spring",
+        stiffness: 350,
+        damping: 30,
+        duration: 0.4
+      }}
+      style={{ 
+        gridArea: targetPosition,
+        padding: '0.7rem', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        justifyContent: 'flex-start', 
+        position: 'relative',
+        cursor: 'pointer'
+      }}
+      initial={false}
+      animate={{
+        scale: isActive ? 1.02 : 1,
+        zIndex: isActive ? 2 : 1,
+        boxShadow: isActive 
+          ? '0 16px 48px 0 rgba(16,185,129,0.22), 0 2px 16px 0 rgba(0,0,0,0.13)' 
+          : '0 2px 4px rgba(0, 0, 0, 0.2)'
+      }}
+    >
       <h2 className="section-title" style={{ marginBottom: '0.4rem' }}>Skills</h2>
-      <div style={{ position: 'relative', height: '190px', overflow: 'hidden', borderRadius: '0.3rem', background: 'var(--card-background)' }}>
+      <div style={{ 
+        position: 'relative', 
+        borderRadius: '0.3rem', 
+        background: 'var(--card-background)', 
+        minHeight: isActive ? '200px' : '90px', 
+        maxHeight: isActive ? '500px' : '180px', 
+        height: 'auto', 
+        overflow: 'visible', 
+        transition: 'all 0.3s ease'
+      }}>
         <div
           ref={scrollContainerRef}
           className="scrollable-container"
-          style={{ height: '100%', maxHeight: '166px', overflowY: 'auto', paddingRight: '4px', padding: '0.3rem' }}
+          style={{ 
+            height: '100%', 
+            maxHeight: isActive ? '500px' : '166px', 
+            overflowY: 'auto', 
+            paddingRight: '4px', 
+            padding: '0.3rem', 
+            paddingBottom: hasOverflow ? '28px' : '0',
+            transition: 'all 0.3s ease'
+          }}
         >
           <div style={{ marginBottom: '0.5rem' }}>
-            <h3 style={{ marginBottom: '0.3rem', color: 'var(--secondary)', fontSize: '0.8rem' }}>Personal Attributes</h3>
+            <h3 style={{ marginBottom: '0.3rem', color: 'var(--secondary)', fontSize: isActive ? '0.95rem' : '0.8rem', transition: 'all 0.3s ease' }}>Personal Attributes</h3>
             <motion.div 
               variants={container}
               initial="hidden"
@@ -107,11 +175,12 @@ const Skills: React.FC = () => {
                   variants={item}
                   style={{
                     backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                    padding: '0.18rem 0.4rem',
+                    padding: isActive ? '0.25rem 0.5rem' : '0.18rem 0.4rem',
                     borderRadius: '0.3rem',
                     border: '1px solid var(--primary)',
-                    fontSize: '0.65rem',
-                    fontWeight: 500
+                    fontSize: isActive ? '0.8rem' : '0.65rem',
+                    fontWeight: 500,
+                    transition: 'all 0.3s ease'
                   }}
                 >
                   {skill.name}
@@ -132,7 +201,7 @@ const Skills: React.FC = () => {
                 variants={item}
                 style={{ marginBottom: 0 }}
               >
-                <h3 style={{ marginBottom: '0.2rem', color: 'var(--text)', fontSize: '0.8rem' }}>{skillCategory.category}</h3>
+                <h3 style={{ marginBottom: '0.2rem', color: 'var(--text)', fontSize: isActive ? '0.95rem' : '0.8rem', transition: 'all 0.3s ease' }}>{skillCategory.category}</h3>
                 {skillCategory.category === 'Programming Languages' || skillCategory.category === 'Frameworks' ? (
                   <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
                     {skillCategory.items.slice(0, 4).map((skill, skillIndex) => {
@@ -142,11 +211,11 @@ const Skills: React.FC = () => {
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.2rem' }}>
-                    {skillCategory.items.slice(0, 6).map((skill, skillIndex) => (
+                    {skillCategory.items.slice(0, isActive ? 8 : 6).map((skill, skillIndex) => (
                       <span 
                         key={skillIndex}
                         className="skill-tag"
-                        style={{ fontSize: '0.65rem' }}
+                        style={{ fontSize: isActive ? '0.8rem' : '0.65rem', transition: 'all 0.3s ease' }}
                       >
                         {skill}
                       </span>
@@ -157,36 +226,23 @@ const Skills: React.FC = () => {
             ))}
           </motion.div>
         </div>
+        {/* Modern scroll indicator - only show if has overflow */}
         {hasOverflow && (
-          <motion.div 
-            style={{ 
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: '24px',
-              backgroundColor: 'var(--card-background)',
-              borderTop: '1px solid rgba(16, 185, 129, 0.1)',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              cursor: 'pointer',
-              zIndex: 100,
-              boxShadow: '0 -4px 6px -2px rgba(0, 0, 0, 0.05)'
-            }}
-            onClick={handleScrollIndicatorClick}
-          >
+          <div className="scroll-indicator" onClick={(e) => {
+            e.stopPropagation();
+            handleScrollIndicatorClick();
+          }} style={{ cursor: 'pointer' }}>
             <motion.div
               animate={{ y: [0, 3, 0] }}
               transition={{ repeat: Infinity, duration: 1.5 }}
-              style={{ color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}
             >
-              {isAtBottom ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
+              {isAtBottom ? <FaChevronUp size={16} /> : <FaChevronDown size={16} />}
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </div>
-    </section>
+    </motion.section>
   );
 };
 

@@ -101,6 +101,104 @@ p, li {
   box-shadow: var(--box-shadow);
   height: auto;
   border: 1px solid var(--border-color);
+  transition: box-shadow 0.25s cubic-bezier(.4,2,.6,1), transform 0.22s cubic-bezier(.4,2,.6,1);
+  will-change: box-shadow, transform;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.section:hover {
+  box-shadow: 0 8px 32px 0 rgba(16,185,129,0.18), 0 1.5px 8px 0 rgba(0,0,0,0.10);
+  transform: scale(1.025) translateY(-2px);
+  z-index: 2;
+  transform: scale(1.02);
+  z-index: 5;
+}
+
+.section.focused {
+  z-index: 10;
+  box-shadow: 0 16px 48px 0 rgba(16,185,129,0.22), 0 2px 16px 0 rgba(0,0,0,0.13);
+  transform: scale(1.06) translateY(-6px);
+  background: var(--background-lighter);
+  border: 2px solid var(--accent);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.1);
+  width: 80%;
+  max-width: 800px;
+  height: 80vh;
+  max-height: 800px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.section-active {
+  background-color: var(--card-background);
+  border: 2px solid var(--accent);
+  position: relative;
+  z-index: 10;
+}
+
+.focused-mode .section.focused .scrollable-container {
+  max-height: calc(80vh - 100px) !important;
+  min-height: calc(80vh - 100px) !important;
+  height: auto !important;
+  overflow-y: auto;
+}
+
+.focused-mode .section.minimized {
+  opacity: 0.3;
+  filter: blur(2px) grayscale(0.4);
+  transform: scale(0.94);
+  pointer-events: none;
+}
+
+.focused-mode .content-area-focused {
+  width: 100vw;
+  max-width: 100vw;
+}
+
+.focused-mode .fit-content-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 1.2rem;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  max-width: 100%;
+}
+
+.focus-btn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.3rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(16,185,129,0.13);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s;
+  z-index: 20;
+}
+.section:hover .focus-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.section.minimized {
+  opacity: 0.5;
+  filter: blur(1.5px) grayscale(0.2);
+  transform: scale(0.97);
+  pointer-events: none;
 }
 
 .section-title {
@@ -223,38 +321,35 @@ p, li {
 
 /* Scrollbar styles */
 .scrollable-container {
-  scrollbar-width: thin; /* For Firefox */
-  -ms-overflow-style: none; /* For Internet Explorer and Edge */
-}
-
-.scrollable-container::-webkit-scrollbar {
-  width: 4px;
-}
-
-.scrollable-container::-webkit-scrollbar-thumb {
-  background: rgba(16, 185, 129, 0.3);
-  border-radius: 4px;
-}
-
-.scrollable-container {
   position: relative;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--primary) transparent;
+  scrollbar-color: var(--accent) var(--card-background);
   padding-right: 0.5rem;
+  /* Hide default ugly scrollbars on Windows */
+  -ms-overflow-style: none;
+  transition: all 0.4s ease;
 }
-
 .scrollable-container::-webkit-scrollbar {
-  width: 5px;
+  width: 8px;
+  background: transparent;
 }
-
+.scrollable-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--accent) 60%, var(--primary-dark) 100%);
+  border-radius: 8px;
+  min-height: 24px;
+  border: 2px solid var(--card-background);
+}
 .scrollable-container::-webkit-scrollbar-track {
   background: transparent;
 }
+.scrollable-container:hover::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--primary-dark) 60%, var(--accent) 100%);
+}
 
-.scrollable-container::-webkit-scrollbar-thumb {
-  background-color: var(--primary);
-  border-radius: 20px;
+/* Hide scrollbars on Windows when not scrolling */
+.scrollable-container {
+  scrollbar-gutter: stable both-edges;
 }
 
 .scrollable-container::after {
@@ -282,14 +377,14 @@ p, li {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 30px;
-  animation: pulse 2s infinite;
+  height: 28px;
+  pointer-events: none;
   z-index: 10;
-  opacity: 0.8;
-  transition: opacity 0.3s ease;
-  pointer-events: none; /* Allows scrolling through the indicator */
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%);
-  color: var(--primary);
+  opacity: 0.85;
+  background: linear-gradient(to top, var(--card-background) 80%, transparent 100%);
+  color: var(--accent);
+  font-size: 1.1rem;
+  transition: opacity 0.3s;
 }
 
 .scroll-indicator.hidden {
@@ -297,27 +392,50 @@ p, li {
 }
 
 .scroll-indicator svg {
-  font-size: 14px;
+  font-size: 1.2rem;
 }
 
-@keyframes pulse {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(3px);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-
-.scrollable-container:not(.has-overflow) .scroll-indicator {
+/* Hide indicator if not needed */
+.scrollable-container:not(.has-overflow) + .scroll-indicator {
   display: none;
 }
 
 .scroll-indicator.hidden {
   opacity: 0 !important;
+}
+
+/* --- PROJECTS & EDUCATION SCROLLABLE HEIGHTS --- */
+#projects .scrollable-container,
+#education .scrollable-container {
+  min-height: 110px;
+  max-height: 180px;
+  height: auto;
+  overflow-y: auto;
+  padding-bottom: 28px; /* Space for indicator */
+}
+@media (max-width: 900px) {
+  #projects .scrollable-container,
+  #education .scrollable-container {
+    max-height: 220px;
+  }
+}
+@media (max-width: 700px) {
+  #projects .scrollable-container,
+  #education .scrollable-container {
+    max-height: 300px;
+  }
+}
+
+/* --- GENERAL POLISH FOR ALL SCROLLABLE SECTIONS --- */
+#skills .scrollable-container,
+#experience .scrollable-container,
+#hobbies .scrollable-container {
+  min-height: 90px;
+  max-height: 180px;
+  height: auto;
+  overflow-y: auto;
+  padding-bottom: 28px;
+  transition: min-height 0.4s ease, max-height 0.4s ease;
 }
 
 /* Responsive styles */
@@ -471,7 +589,7 @@ header.section {
 .fit-content-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: 1fr;
+  grid-template-rows: repeat(3, 1fr);
   gap: 1.2rem;
   width: 100%;
   height: 100%;
@@ -480,9 +598,63 @@ header.section {
     "about about skills"
     "about about experience"
     "education projects hobbies";
+  position: relative;
 }
 
 /* Assign grid areas to sections */
+#about { grid-area: about; }
+#skills { grid-area: skills; }
+#experience { grid-area: experience; }
+#education { grid-area: education; }
+#projects { grid-area: projects; }
+#hobbies { grid-area: hobbies; }
+
+/* Make sure sections maintain consistent sizes when swapping positions */
+.section {
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.section.section-active {
+  border: 2px solid var(--accent);
+  z-index: 5;
+}
+
+/* Style adjustments for content area when swapping positions */
+.scrollable-container {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+/* Media queries for responsive layout */
+@media (max-width: 1100px) {
+  .fit-content-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "about about"
+      "skills experience"
+      "education projects"
+      "hobbies hobbies";
+  }
+}
+
+@media (max-width: 700px) {
+  .fit-content-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "about"
+      "skills"
+      "experience"
+      "education"
+      "projects"
+      "hobbies";
+  }
+}
+
 #about.section {
   grid-area: about;
   min-height: 300px;
@@ -518,9 +690,6 @@ header.section {
       "skills experience"
       "education projects"
       "hobbies hobbies";
-  }
-  #about.section {
-    min-height: 250px;
   }
 }
 
@@ -576,5 +745,75 @@ header.section {
   .fit-content-grid > .section {
     height: auto;
     min-height: 220px;
+  }
+}
+
+/* Added responsive styles for mobile devices */
+@media (max-width: 768px) {
+  .fit-content-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "about"
+      "skills"
+      "experience"
+      "education"
+      "projects"
+      "hobbies";
+    gap: 1rem;
+  }
+  
+  .section {
+    min-height: auto !important;
+    height: auto !important;
+    cursor: default !important;
+    transition: none !important;
+  }
+  
+  .section:hover, .section.section-active {
+    transform: none !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+    border: none !important;
+    scale: 1 !important;
+  }
+  
+  .section.section-active {
+    border: 1px solid var(--accent) !important;
+  }
+  
+  .scrollable-container {
+    max-height: none !important;
+    min-height: auto !important;
+    overflow-y: visible !important;
+  }
+  
+  #hobbies.section {
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  
+  /* Display all content in mobile view */
+  #skills .scrollable-container,
+  #experience .scrollable-container,
+  #education .scrollable-container,
+  #projects .scrollable-container,
+  #hobbies .scrollable-container {
+    max-height: none !important;
+    overflow-y: visible !important;
+  }
+  
+  /* Hide scroll indicators on mobile */
+  .scroll-indicator {
+    display: none !important;
+  }
+  
+  /* Make text more readable on small screens */
+  .section-title {
+    font-size: 1.1rem !important;
+  }
+  
+  /* Increase spacing between sections for better readability */
+  .fit-content-grid > .section {
+    margin-bottom: 1rem;
   }
 }

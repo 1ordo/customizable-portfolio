@@ -1,13 +1,29 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaBriefcase, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import resumeData from '../data/resume';
 
-const Experience: React.FC = () => {
+interface ExperienceProps {
+  id: string;
+  isActive: boolean;
+  isPrevious: boolean;
+  initialPosition: string;
+  targetPosition: string;
+  onClick: () => void;
+}
+
+const Experience: React.FC<ExperienceProps> = ({ 
+  id, 
+  isActive, 
+  isPrevious, 
+  initialPosition, 
+  targetPosition, 
+  onClick 
+}) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isAtBottom, setIsAtBottom] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
-  
+
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -20,7 +36,6 @@ const Experience: React.FC = () => {
     
     const handleScroll = () => {
       if (!container) return;
-      
       const isBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 10;
       setIsAtBottom(isBottom);
     };
@@ -34,12 +49,13 @@ const Experience: React.FC = () => {
       container.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', checkForOverflow);
     };
-  }, []);
+  }, [isActive]); // Re-run when active state changes
 
-  const handleScrollIndicatorClick = () => {
+  const handleScrollIndicatorClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering parent onClick
+    
     const container = scrollContainerRef.current;
     if (!container) return;
-    
     if (isAtBottom) {
       container.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
@@ -47,194 +63,99 @@ const Experience: React.FC = () => {
       container.scrollTo({ top: newPosition, behavior: 'smooth' });
     }
   };
-  
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.05
-      }
-    }
-  };
-  
-  const item = {
-    hidden: { opacity: 0, y: 10 },
-    show: { opacity: 1, y: 0 }
-  };
 
   return (
-    <section 
+    <motion.section 
       id="experience" 
-      className="section" 
+      className={`section section-experience ${isActive ? 'section-active' : ''}`}
+      onClick={onClick}
+      layout
+      transition={{
+        type: "spring",
+        stiffness: 350,
+        damping: 30,
+        duration: 0.4
+      }}
       style={{ 
-        padding: '0.75rem', 
-        height: 'auto', 
-        maxHeight: '407px', 
+        gridArea: targetPosition,
+        padding: '0.7rem',
         display: 'flex',
-        flexDirection: 'column' 
+        flexDirection: 'column',
+        position: 'relative',
+        cursor: 'pointer'
+      }}
+      initial={false}
+      animate={{
+        scale: isActive ? 1.02 : 1,
+        zIndex: isActive ? 2 : 1,
+        boxShadow: isActive 
+          ? '0 16px 48px 0 rgba(16,185,129,0.22), 0 2px 16px 0 rgba(0,0,0,0.13)' 
+          : '0 2px 4px rgba(0, 0, 0, 0.2)'
+      }}
+      whileHover={{ 
+        boxShadow: isActive 
+          ? '0 16px 48px 0 rgba(16,185,129,0.22), 0 2px 16px 0 rgba(0,0,0,0.13)' 
+          : '0 4px 8px rgba(0, 0, 0, 0.15)' 
       }}
     >
-      <h2 className="section-title" style={{ marginBottom: '0.4rem', fontSize: '0.95rem' }}>Experience</h2>
-      
-      <div style={{ 
-        position: 'relative', 
-        flexGrow: 1, 
-        overflow: 'hidden',
-        borderRadius: '0.3rem',
-        background: 'var(--card-background)',
-      }}>
-        <div 
-          ref={scrollContainerRef}
-          style={{ 
-            height: '100%', 
-            overflowY: 'auto',
-            paddingRight: '4px',
-            paddingBottom: '24px',
-          }}
-        >
-          <motion.div
-            variants={container}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            style={{ padding: '0.3rem' }}
-          >
-            {resumeData.experiences.map((job, index) => (
-              <motion.div 
-                key={index} 
-                variants={item}
-                style={{ 
-                  marginBottom: '0.5rem',
-                  padding: '0.5rem',
-                  borderRadius: '0.3rem',
-                  border: '1px solid rgba(16, 185, 129, 0.2)',
-                  background: 'rgba(16, 185, 129, 0.05)',
-                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
-                }}
-              >
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'flex-start', 
-                  gap: '0.5rem' 
-                }}>
-                  <div style={{ 
-                    flexShrink: 0, 
-                    color: 'var(--accent)',
-                    backgroundColor: 'rgba(16, 185, 129, 0.15)',
-                    borderRadius: '50%',
-                    width: '1.5rem',
-                    height: '1.5rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: '0.1rem'
-                  }}>
-                    <FaBriefcase style={{ fontSize: '0.7rem' }} />
-                  </div>
-                  <div style={{ width: '100%' }}>
-                    <div style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'flex-start',
-                      marginBottom: '0.2rem',
-                      flexWrap: 'wrap'
-                    }}>
-                      <h3 style={{ 
-                        fontSize: '0.8rem', 
-                        fontWeight: 600,
-                        color: 'var(--text)',
-                        margin: 0
-                      }}>{job.title}</h3>
-                      {job.period && <span style={{ 
-                        fontSize: '0.65rem',
-                        color: 'var(--accent)',
-                        fontWeight: 500
-                      }}>{job.period}</span>}
-                    </div>
-                    <div style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      marginBottom: '0.3rem',
-                      alignItems: 'center',
-                      flexWrap: 'wrap'
-                    }}>
-                      <p style={{ 
-                        color: 'var(--text-light)',
-                        fontWeight: 500,
-                        fontSize: '0.7rem',
-                        margin: 0
-                      }}>{job.company}</p>
-                      {job.location && <span style={{ 
-                        fontSize: '0.65rem',
-                        color: 'var(--text-light)',
-                        fontStyle: 'italic'
-                      }}>{job.location}</span>}
-                    </div>
-                    <ul style={{ 
-                      paddingLeft: '0.8rem', 
-                      margin: '0.1rem 0 0 0',
-                      fontSize: '0.65rem',
-                      color: 'var(--text-light)'
-                    }}>
-                      {job.description.map((bullet, bIndex) => (
-                        <li key={bIndex} style={{ 
-                          marginBottom: '0.2rem',
-                          lineHeight: '1.3'
-                        }}>
-                          {bullet}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-        
-        {hasOverflow && (
-          <motion.div 
-            style={{ 
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: '24px',
-              backgroundColor: 'var(--card-background)',
-              borderTop: '1px solid rgba(16, 185, 129, 0.1)',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              cursor: 'pointer',
-              zIndex: 100,
-              boxShadow: '0 -4px 6px -2px rgba(0, 0, 0, 0.05)'
-            }}
-            onClick={handleScrollIndicatorClick}
-          >
-            <motion.div
-              animate={{
-                y: [0, 3, 0],
-              }}
-              transition={{ 
-                repeat: Infinity, 
-                duration: 1.5 
-              }}
-              style={{
-                color: 'var(--accent)', 
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '100%',
-                height: '100%'
+      <h2 className="section-title" style={{ marginBottom: '0.7rem' }}>Experience</h2>
+      <div 
+        ref={scrollContainerRef}
+        className="scrollable-container"
+        style={{ 
+          minHeight: isActive ? '200px' : '90px',
+          maxHeight: isActive ? '500px' : '180px',
+          overflowY: 'auto', 
+          height: 'auto',
+          paddingBottom: hasOverflow ? '28px' : '0',
+          transition: 'all 0.3s ease'
+        }}
+      >
+        <div style={{ marginTop: '0.2rem' }}>
+          {resumeData.experiences.map((exp, index) => (
+            <motion.div 
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1, duration: 0.3 }}
+              viewport={{ once: true }}
+              style={{ 
+                marginBottom: '1.2rem', // Increased margin
+                borderLeft: '2px solid var(--accent)', 
+                paddingLeft: '0.7rem' // Increased padding
               }}
             >
-              {isAtBottom ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
+              <h3 style={{ fontSize: isActive ? '1rem' : '0.85rem', marginBottom: '0.4rem', transition: 'all 0.3s ease' }}>{exp.title}</h3>
+              <p style={{ fontSize: isActive ? '0.9rem' : '0.75rem', opacity: 0.9, marginBottom: '0.25rem', transition: 'all 0.3s ease' }}>
+                {exp.company}
+              </p>
+              <p style={{ fontSize: isActive ? '0.85rem' : '0.7rem', opacity: 0.7, marginBottom: '0.4rem', transition: 'all 0.3s ease' }}>
+                {exp.period}
+              </p>
+              <ul style={{ fontSize: isActive ? '0.9rem' : '0.75rem', paddingLeft: '1.2rem', marginTop: '0.4rem', transition: 'all 0.3s ease' }}>
+                {exp.description.map((responsibility, respIndex) => (
+                  <li key={respIndex} style={{ marginBottom: '0.3rem' }}>
+                    {responsibility}
+                  </li>
+                ))}
+              </ul>
             </motion.div>
-          </motion.div>
-        )}
+          ))}
+        </div>
       </div>
-    </section>
+      {/* Modern scroll indicator */}
+      {hasOverflow && (
+        <div className="scroll-indicator" onClick={handleScrollIndicatorClick} style={{ cursor: 'pointer' }}>
+          <motion.div
+            animate={{ y: [0, 3, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}
+          >
+            {isAtBottom ? <FaChevronUp size={16} /> : <FaChevronDown size={16} />}
+          </motion.div>
+        </div>
+      )}
+    </motion.section>
   );
 };
 
