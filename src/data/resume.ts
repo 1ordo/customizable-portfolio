@@ -73,33 +73,75 @@ const resumeData: ResumeData = {
     { name: "Fast learning" },
     { name: "Always on-time" },
     { name: "Adaptability" },
-    { name: "Honest" }
+    { name: "Honest" },
   ],
   skills: [
     {
       category: "Programming & AI Development",
-      items: ["Python", "C#", "JavaScript", "C++", "C", "FastAPI", "Flask", "Django", "PyTorch", "TensorFlow", "ONNX", "Llama.cpp", "LangChain"]
+      items: [
+        "Python",
+        "C#",
+        "JavaScript",
+        "C++",
+        "C",
+        "FastAPI",
+        "express.js",
+        "Flask",
+        "Django",
+        "PyTorch",
+        "TensorFlow",
+        "ONNX",
+        "Llama.cpp",
+        "LangChain",
+      ],
     },
     {
       category: "Backend & Databases",
-      items: ["PostgreSQL", "MySQL", "SQLite", "JSON", "API Development", "Web Services", "ORM Libraries", "Cryptography"]
+      items: [
+        "PostgreSQL",
+        "MySQL",
+        "SQLite",
+        "JSON",
+        "API Development",
+        "Web Services",
+        "ORM Libraries",
+        "Cryptography",
+      ],
     },
     {
       category: "DevOps & Infrastructure",
-      items: ["CI/CD", "Git", "Docker", "Nginx", "Server Hosting", "System Architecture"]
+      items: [
+        "CI/CD",
+        "Git",
+        "Docker",
+        "Nginx",
+        "Server Hosting",
+        "System Architecture",
+      ],
     },
     {
       category: "Data Science",
-      items: ["Apache Spark", "Data Processing", "ETL Pipelines", "Machine Learning Integration"]
+      items: [
+        "Apache Spark",
+        "Data Processing",
+        "ETL Pipelines",
+        "Machine Learning Integration",
+      ],
     },
     {
       category: "Automation & Embedded Systems",
-      items: ["Discord Bots", "Telegram Bots", "Facebook Bots", "Arduino", "IoT Development"]
+      items: [
+        "Discord Bots",
+        "Telegram Bots",
+        "Facebook Bots",
+        "Arduino",
+        "IoT Development",
+      ],
     },
     {
       category: "Web & Mobile",
-      items: ["Flutter", "JavaScript", "HTML", "CSS"]
-    }
+      items: ["Flutter", "JavaScript", "HTML", "CSS", "next.js"],
+    },
   ],
   education: [
     {
@@ -107,17 +149,31 @@ const resumeData: ResumeData = {
       institution: "New Mansoura University",
       location: "Egypt",
       year: "2026",
-      description: "Studying AI Engineering with a focus on machine learning, deep learning, and software development."
+      description:
+        "Studying AI Engineering with a focus on machine learning, deep learning, and software development.",
     },
     {
       degree: "IELTS Academic",
       institution: "British Council",
       location: "Egypt",
       year: "2022",
-      description: "C1 Level"
-    }
+      description: "C1 Level",
+    },
   ],
   experiences: [
+    {
+      title: "AI/ML Engineer",
+      company: "MyAly.AI",
+      location: "Remote",
+      period: "April 2025 – Present",
+      description: [
+        "Engineered AI-powered marketing agents using OpenAI and workflow automation with n8n in addition to FastAPI.",
+        "Built and maintained scalable backend services with FastAPI, Supabase, and secure API integrations",
+        "Developed internal tools for user authentication, Design Engine and more.",
+        "Implemented improvements to deployment, version control, and developer collaboration workflows",
+        "Collaborated closely with the CEO and cross-functional teams to reinforce security and infrastructure resilience",
+      ],
+    },
     {
       title: "Co-founder & AI Engineer",
       company: "TotallyNot",
@@ -126,8 +182,8 @@ const resumeData: ResumeData = {
       description: [
         "Led the development of AI-driven features for the Local on-device AI",
         "Designed and deployed scalable backend architectures using FastAPI, PostgreSQL, and Docker",
-        "Implemented CI/CD pipelines for seamless deployment and improved system stability"
-      ]
+        "Implemented CI/CD pipelines for seamless deployment and improved system stability",
+      ],
     },
     {
       title: "Freelance Developer",
@@ -137,9 +193,9 @@ const resumeData: ResumeData = {
       description: [
         "Built high-performance APIs with optimized queries for fast response times",
         "Designed custom automation solutions for various clients",
-        "Developed multiple Discord bots for automation, AI integration, and queue management"
-      ]
-    }
+        "Developed multiple Discord bots for automation, AI integration, and queue management",
+      ],
+    },
   ],
   projects: [
     "Won multiple AI & technology innovation competitions, including those powered by Arizona State University",
@@ -147,7 +203,7 @@ const resumeData: ResumeData = {
     "Built Discord & Telegram bots handling real-time data processing & automation",
     "Created full-stack web applications with user authentication, data processing, and AI integration",
     "Developed IoT-based projects using Arduino and sensor automation",
-    "Implemented Nginx & Docker-based deployments for scalable systems"
+    "Implemented Nginx & Docker-based deployments for scalable systems",
   ],
   hobbies: [
     { name: "Music", icon: "music" },
@@ -159,11 +215,16 @@ const resumeData: ResumeData = {
     { skill: "UI/UX Design basics", emoji: "🎨", level: 3 },
     { skill: "Project Management", emoji: "📊", level: 4 },
     { skill: "Burn garlic at 2 seconds", emoji: "🧄", level: 5 },
-    { skill: "Better at conducting videos than making videos", emoji: "🎬", level: 2 },
-    { skill: "Finding bugs in production", emoji: "🐛", level: 4 }
+    {
+      skill: "Better at conducting videos than making videos",
+      emoji: "🎬",
+      level: 2,
+    },
+    { skill: "Finding bugs in production", emoji: "🐛", level: 4 },
   ],
   availableForHire: true,
-  resumeUrl: "https://drive.google.com/file/d/18TygdnntT9pW-BPGOwFcGFLawCUC-76v/view"
+  resumeUrl:
+    "https://drive.google.com/file/d/18TygdnntT9pW-BPGOwFcGFLawCUC-76v/view",
 };
 
 export default resumeData;
