@@ -136,6 +136,8 @@ const resumeData: ResumeData = {
         "Facebook Bots",
         "Arduino",
         "IoT Development",
+        "n8n",
+        "orange"
       ],
     },
     {
