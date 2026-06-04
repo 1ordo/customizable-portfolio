@@ -1,153 +1,114 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
-import resumeData from '../data/resume';
+import React from "react";
+import { projects, moreProjects, privateNote, personal } from "../data/resume";
+import Reveal from "./Reveal";
+import Icon from "./Icons";
 
-interface ProjectsProps {
-  id: string;
-  isActive: boolean;
-  isPrevious: boolean;
-  initialPosition: string;
-  targetPosition: string;
-  onClick: () => void;
+function trackSpotlight(e: React.MouseEvent<HTMLElement>) {
+  const el = e.currentTarget;
+  const r = el.getBoundingClientRect();
+  el.style.setProperty("--cx", `${((e.clientX - r.left) / r.width) * 100}%`);
+  el.style.setProperty("--cy", `${((e.clientY - r.top) / r.height) * 100}%`);
 }
 
-const Projects: React.FC<ProjectsProps> = ({ 
-  id, 
-  isActive, 
-  isPrevious, 
-  initialPosition, 
-  targetPosition, 
-  onClick 
-}) => {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [isAtBottom, setIsAtBottom] = useState(false);
-  const [hasOverflow, setHasOverflow] = useState(false);
-
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-    
-    const checkForOverflow = () => {
-      const hasContentOverflow = container.scrollHeight > container.clientHeight + 5;
-      setHasOverflow(hasContentOverflow);
-      container.classList.toggle('has-overflow', hasContentOverflow);
-    };
-    
-    const handleScroll = () => {
-      if (!container) return;
-      const isBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 10;
-      setIsAtBottom(isBottom);
-    };
-    
-    checkForOverflow();
-    handleScroll();
-    container.addEventListener('scroll', handleScroll);
-    window.addEventListener('resize', checkForOverflow);
-    
-    return () => {
-      container.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', checkForOverflow);
-    };
-  }, [isActive]); // Re-run when active state changes
-
-  const handleScrollIndicatorClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent triggering parent onClick
-    
-    const container = scrollContainerRef.current;
-    if (!container) return;
-    if (isAtBottom) {
-      container.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      const newPosition = container.scrollTop + 60;
-      container.scrollTo({ top: newPosition, behavior: 'smooth' });
-    }
-  };
-
-  return (
-    <motion.section 
-      id="projects" 
-      className={`section section-projects ${isActive ? 'section-active' : ''}`}
-      onClick={onClick}
-      layout
-      transition={{
-        type: "spring",
-        stiffness: 350,
-        damping: 30,
-        duration: 0.4
-      }}
-      style={{ 
-        gridArea: targetPosition,
-        padding: '0.7rem',
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'relative',
-        cursor: 'pointer'
-      }}
-      initial={false}
-      animate={{
-        scale: isActive ? 1.02 : 1,
-        zIndex: isActive ? 2 : 1,
-        boxShadow: isActive 
-          ? '0 16px 48px 0 rgba(16,185,129,0.22), 0 2px 16px 0 rgba(0,0,0,0.13)' 
-          : '0 2px 4px rgba(0, 0, 0, 0.2)'
-      }}
-      whileHover={{ 
-        boxShadow: isActive 
-          ? '0 16px 48px 0 rgba(16,185,129,0.22), 0 2px 16px 0 rgba(0,0,0,0.13)' 
-          : '0 4px 8px rgba(0, 0, 0, 0.15)' 
-      }}
-    >
-      <h2 className="section-title" style={{ marginBottom: '0.7rem' }}>Projects</h2>
-      <div 
-        ref={scrollContainerRef}
-        className="scrollable-container"
-        style={{ 
-          minHeight: isActive ? '200px' : '110px',
-          maxHeight: isActive ? '500px' : '180px',
-          overflowY: 'auto', 
-          height: 'auto',
-          paddingBottom: hasOverflow ? '28px' : '0',
-          transition: 'all 0.3s ease'
-        }}
-      >
-        <div style={{ marginTop: '0.2rem' }}>
-          {resumeData.projects.map((project, index) => (
-            <motion.div 
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.3 }}
-              viewport={{ once: true }}
-              style={{ 
-                marginBottom: '0.9rem', // Increased margin
-                padding: '0.6rem', // Increased padding
-                border: '1px solid rgba(16, 185, 129, 0.2)',
-                borderRadius: 'var(--border-radius)',
-                backgroundColor: 'rgba(16, 185, 129, 0.03)'
-              }}
-            >
-              <p style={{ fontSize: isActive ? '0.9rem' : '0.75rem', lineHeight: '1.5', transition: 'all 0.3s ease' }}>
-                {project}
-              </p>
-            </motion.div>
-          ))}
+function ProjectCard({ project, lead }: { project: (typeof projects)[number]; lead: boolean }) {
+  const inner = (
+    <>
+      <div className="project__top">
+        <div>
+          <div className="project__name">{project.name}</div>
+          <div className="project__tagline">{project.tagline}</div>
+        </div>
+        <div className="project__badges">
+          {typeof project.stars === "number" && (
+            <span className="project__badge">
+              <Icon name="star" size={12} />
+              {project.stars}
+            </span>
+          )}
+          <span
+            className={`project__badge ${
+              project.status === "In development" ? "project__badge--dev" : ""
+            }`}
+          >
+            {project.status}
+          </span>
         </div>
       </div>
-      {/* Modern scroll indicator - only show if needed */}
-      {hasOverflow && (
-        <div className="scroll-indicator" onClick={handleScrollIndicatorClick} style={{ cursor: 'pointer' }}>
-          <motion.div
-            animate={{ y: [0, 3, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}
-          >
-            {isAtBottom ? <FaChevronUp size={16} /> : <FaChevronDown size={16} />}
-          </motion.div>
-        </div>
-      )}
-    </motion.section>
-  );
-};
 
-export default Projects;
+      <p className="project__desc">{project.description}</p>
+
+      <div className="project__foot">
+        <div className="chips">
+          {project.stack.map((s) => (
+            <span className="chip" key={s}>
+              {s}
+            </span>
+          ))}
+        </div>
+        <span className={`project__arrow ${project.href ? "" : "project__arrow--static"}`}>
+          <Icon name={project.href ? "arrow" : "cpu"} size={17} />
+        </span>
+      </div>
+    </>
+  );
+
+  const className = `project ${lead ? "project--lead" : ""}`;
+
+  return project.href ? (
+    <a
+      className={className}
+      href={project.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      onMouseMove={trackSpotlight}
+    >
+      {inner}
+    </a>
+  ) : (
+    <div className={className} onMouseMove={trackSpotlight}>
+      {inner}
+    </div>
+  );
+}
+
+export default function Projects() {
+  return (
+    <section className="section shell" id="projects">
+      <Reveal className="section-head">
+        <span className="section-head__idx">02</span>
+        <h2 className="section-head__title">
+          Stuff I've <em>built</em>
+        </h2>
+        <span className="section-head__rule" />
+        <span className="section-head__meta">mostly open source</span>
+      </Reveal>
+
+      <Reveal className="projects-grid">
+        {projects.map((p, i) => (
+          <ProjectCard key={p.name} project={p} lead={i === 0} />
+        ))}
+      </Reveal>
+
+      <Reveal className="workshop">
+        <div className="workshop__head">
+          <span className="kicker">More from the workshop</span>
+          <a className="workshop__all" href={personal.github} target="_blank" rel="noopener noreferrer">
+            All repos on GitHub
+            <Icon name="arrow" size={14} />
+          </a>
+        </div>
+        {moreProjects.map((m) => (
+          <a className="wrow" key={m.name} href={m.href} target="_blank" rel="noopener noreferrer">
+            <span className="wrow__name">{m.name}</span>
+            <span className="wrow__blurb">{m.blurb}</span>
+            <Icon name="arrow" size={15} className="wrow__arrow" />
+          </a>
+        ))}
+        <div className="wrow wrow--note">
+          <span className="wrow__name">Private work</span>
+          <span className="wrow__blurb">{privateNote}</span>
+        </div>
+      </Reveal>
+    </section>
+  );
+}
