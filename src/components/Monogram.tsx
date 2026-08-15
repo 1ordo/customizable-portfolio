@@ -36,6 +36,7 @@ export default function Monogram({
           <motion.path
             key={i}
             d={d}
+            className={i === 1 ? "monogram__tail" : undefined}
             initial={{ pathLength: 0, opacity: 0 }}
             animate={{ pathLength: 1, opacity: 1 }}
             transition={{
@@ -44,7 +45,7 @@ export default function Monogram({
             }}
           />
         ) : (
-          <path key={i} d={d} />
+          <path key={i} d={d} className={i === 1 ? "monogram__tail" : undefined} />
         )
       )}
     </svg>

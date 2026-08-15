@@ -2,6 +2,7 @@ import React from "react";
 import Head from "next/head";
 import { personal } from "../data/resume";
 import Backdrop from "../components/Backdrop";
+import IntroOverlay from "../components/IntroOverlay";
 import Nav from "../components/Nav";
 import Hero from "../components/Hero";
 import Work from "../components/Work";
@@ -30,6 +31,7 @@ export default function Home() {
         <link rel="canonical" href={personal.github} />
       </Head>
 
+      <IntroOverlay />
       <Backdrop />
       <Nav />
       <main>

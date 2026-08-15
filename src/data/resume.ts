@@ -35,6 +35,9 @@ export interface Project {
   status: "Open source" | "In development" | "Private";
   stars?: number;
   href?: string;
+  liveHref?: string;
+  image?: string;
+  imageAlt?: string;
 }
 
 export interface SkillGroup {
@@ -63,7 +66,8 @@ export const personal = {
   handle: "lordo",
   role: "Lead Engineer",
   discipline: "Backend & AI",
-  location: "Mansoura, Egypt",
+  location: "Cairo, Egypt",
+  locationShort: "Cairo, EG",
   currentNow: "Lead Engineer at Drive-Nova (UAE)",
   currentPrev: "Before that: Pillar (Fractional CTO), MyAly.AI, TotallyNot",
   resumeUrl: "/Mohamed_Yousry_Resume.pdf",
@@ -89,11 +93,12 @@ export const roles: Role[] = [
     location: "Hybrid, UAE",
     period: "Apr 2026 - Present",
     current: true,
-    summary: "Own the architecture and delivery across B2B and B2C platforms in the tyre industry.",
+    summary:
+      "Drive-Nova is an engineering agency serving major players in the tyre trade across Europe and the UAE. I lead engineering across their platforms, end to end.",
     points: [
-      "Lead engineering across B2B and B2C platforms, including managed Magento storefronts, owning the architecture, the delivery, and keeping it all running.",
+      "Act as lead engineer for a leading European tyre group's entire digital operation: their B2B commerce platform (Magento), public websites, internal platforms, and the email infrastructure underneath it all.",
+      "Built the platform and the AI behind TyresOnline (UAE), and I keep both running in production.",
       "Architecting the AI side of the roadmap: agent-to-agent (A2A) architecture and multi-agent frameworks like AG2.",
-      "Run integrations and the technical relationships with partner platforms across Europe, Egypt, and the UAE.",
     ],
     stack: ["Architecture", "A2A", "AG2", "Magento", "Integrations"],
   },
@@ -156,6 +161,18 @@ export const roles: Role[] = [
 ];
 
 export const projects: Project[] = [
+  {
+    name: "Roundtable",
+    tagline: "Five subscriptions and still nothing to watch",
+    description:
+      "A self-hosted film and series tracker that learns your taste from what you actually do, knows which of your services carries a title in your country, and tracks shows by the episode. Watch nights blend the whole group's taste into one queue and let everyone vote on the night. The built-in assistant researches instead of guessing, and an MCP server lets your own AI read your watch history. Runs on your machine; nothing leaves it.",
+    stack: ["FastAPI", "React", "PostgreSQL", "pgvector", "TMDB", "MCP", "Docker"],
+    status: "Open source",
+    href: "https://github.com/1ordo/roundtable",
+    // liveHref: add the live site link here when it's up.
+    image: "/roundtable-home.webp",
+    imageAlt: "The Roundtable home page: personalised shelves of films and series",
+  },
   {
     name: "strix-halo-unsloth",
     tagline: "Getting ML to run on hardware it shouldn't",
@@ -241,7 +258,7 @@ export const projects: Project[] = [
   },
 ];
 
-// Smaller public things, plus an honest nod to the private client work.
+// Smaller public things that don't need a whole card.
 export const moreProjects: { name: string; blurb: string; href: string }[] = [
   {
     name: "AI-Playground",
@@ -254,10 +271,6 @@ export const moreProjects: { name: string; blurb: string; href: string }[] = [
     href: "https://github.com/1ordo/AOE-Discord-bot",
   },
 ];
-
-// Said plainly so the breadth shows without dead links.
-export const privateNote =
-  "Plus private client work I can't link: a government-procurement platform on SAM.gov with GPT-4, a speech-to-speech AI, crypto trading dashboards, a self-hosted Supabase stack, and a pile of Discord bots people actually use.";
 
 export const skills: SkillGroup[] = [
   {
@@ -328,11 +341,11 @@ export const beyond: BeyondItem[] = [
   },
   {
     icon: "code",
-    text: "I'm an open-source person at heart. Most of what I build ends up public, and I lean on the community's work every single day.",
+    text: "Most of what I build ends up on GitHub. Strangers' repos have saved me too many times not to return the favor.",
   },
   {
-    icon: "bug",
-    text: "I'd rather read the logs than guess. Most 'impossible' bugs turn out to be something boring I just hadn't looked at yet.",
+    icon: "server",
+    text: "I self-host nearly everything, including this site's backups. The cloud is fine. I just sleep better when the outage is my fault.",
   },
   {
     icon: "wave",
@@ -355,5 +368,5 @@ export const contactLinks: ContactLink[] = [
   { label: "GitHub", value: `github.com/${personal.githubHandle}`, href: personal.github, icon: "github" },
   { label: "LinkedIn", value: "in/notlordo", href: personal.linkedin, icon: "linkedin" },
   { label: "Résumé", value: "Download the PDF", href: personal.resumeUrl, icon: "document" },
-  { label: "Where", value: personal.location, href: "https://maps.google.com/?q=Mansoura,Egypt", icon: "pin" },
+  { label: "Where", value: personal.location, href: "https://maps.google.com/?q=Cairo,Egypt", icon: "pin" },
 ];

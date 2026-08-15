@@ -86,7 +86,7 @@ export default function Contact() {
               <Monogram size={30} className="footer__mark" />
               <Wordmark />
             </div>
-            <span className="footer__note">Built this one myself. No template. Mansoura, 2026.</span>
+            <span className="footer__note">Built this one myself. No template. Cairo, 2026.</span>
           </div>
           <div className="footer__links">
             <a href={personal.github} target="_blank" rel="noopener noreferrer">

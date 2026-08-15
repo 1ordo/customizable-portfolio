@@ -1,5 +1,5 @@
 import React from "react";
-import { projects, moreProjects, privateNote, personal } from "../data/resume";
+import { projects, moreProjects, personal } from "../data/resume";
 import Reveal from "./Reveal";
 import Icon from "./Icons";
 
@@ -11,7 +11,9 @@ function trackSpotlight(e: React.MouseEvent<HTMLElement>) {
 }
 
 function ProjectCard({ project, lead }: { project: (typeof projects)[number]; lead: boolean }) {
-  const inner = (
+  const showImage = lead && project.image;
+
+  const body = (
     <>
       <div className="project__top">
         <div>
@@ -24,6 +26,9 @@ function ProjectCard({ project, lead }: { project: (typeof projects)[number]; le
               <Icon name="star" size={12} />
               {project.stars}
             </span>
+          )}
+          {project.liveHref && (
+            <span className="project__badge project__badge--live">Live</span>
           )}
           <span
             className={`project__badge ${
@@ -52,12 +57,24 @@ function ProjectCard({ project, lead }: { project: (typeof projects)[number]; le
     </>
   );
 
-  const className = `project ${lead ? "project--lead" : ""}`;
+  const inner = showImage ? (
+    <div className="project__split">
+      <div className="project__text">{body}</div>
+      <figure className="project__shot">
+        <img src={project.image} alt={project.imageAlt ?? project.name} loading="lazy" />
+      </figure>
+    </div>
+  ) : (
+    body
+  );
 
-  return project.href ? (
+  const className = `project ${lead ? "project--lead" : ""}`;
+  const href = project.liveHref ?? project.href;
+
+  return href ? (
     <a
       className={className}
-      href={project.href}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       onMouseMove={trackSpotlight}
@@ -104,10 +121,6 @@ export default function Projects() {
             <Icon name="arrow" size={15} className="wrow__arrow" />
           </a>
         ))}
-        <div className="wrow wrow--note">
-          <span className="wrow__name">Private work</span>
-          <span className="wrow__blurb">{privateNote}</span>
-        </div>
       </Reveal>
     </section>
   );

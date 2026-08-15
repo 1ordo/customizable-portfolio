@@ -9,7 +9,10 @@ export default function Hero() {
         <div className="hero__main">
           <div className="hero__eyebrow">
             <span className="hero__mark" />
-            Lead Engineer / Backend &amp; AI / Mansoura, EG
+            <span>
+              {personal.role} / Backend &amp; AI /{" "}
+              <span style={{ whiteSpace: "nowrap" }}>{personal.locationShort}</span>
+            </span>
           </div>
 
           <h1 className="hero__name">

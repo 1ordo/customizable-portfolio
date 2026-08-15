@@ -21,49 +21,49 @@
   --accent-h: 36;
 }
 
-/* Dark is the default theme (warm near-black "drafting paper at night"). */
+/* Dark is the default theme ("desk lamp at midnight": warm near-black, calm amber). */
 :root,
 [data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0c0c0d;
-  --bg-2: #141416;
-  --surface: rgba(255, 255, 255, 0.024);
-  --surface-2: rgba(255, 255, 255, 0.05);
-  --text: #e8e8e6;
-  --text-strong: #ffffff;
-  --muted: #8c8c89;
-  --faint: #59595a;
-  --line: rgba(255, 255, 255, 0.12);
-  --line-soft: rgba(255, 255, 255, 0.06);
-  --accent: #f5f5f3;
-  --accent-2: #cfcfcd;
-  --accent-ink: #0c0c0d;
-  --grid: rgba(255, 255, 255, 0.04);
-  --glow: rgba(255, 255, 255, 0.05);
-  --spot: rgba(255, 255, 255, 0.07);
+  --bg: #131110;
+  --bg-2: #1a1614;
+  --surface: rgba(255, 244, 230, 0.026);
+  --surface-2: rgba(255, 244, 230, 0.055);
+  --text: #eae4dc;
+  --text-strong: #faf5ee;
+  --muted: #968d83;
+  --faint: #625b53;
+  --line: rgba(236, 214, 189, 0.13);
+  --line-soft: rgba(236, 214, 189, 0.065);
+  --accent: #d9a05b;
+  --accent-2: #b98a52;
+  --accent-ink: #1c1610;
+  --grid: rgba(236, 214, 189, 0.045);
+  --glow: rgba(217, 160, 91, 0.075);
+  --spot: rgba(217, 160, 91, 0.06);
   --shadow: 0 26px 64px -34px rgba(0, 0, 0, 0.9);
 }
 
-/* Light theme (warm paper, ink, draftsman amber). */
+/* Light theme ("morning paper": warm ivory, ink, copper accent). */
 [data-theme="light"] {
   color-scheme: light;
-  --bg: #fbfbfa;
-  --bg-2: #f1f1ef;
-  --surface: rgba(0, 0, 0, 0.022);
-  --surface-2: rgba(0, 0, 0, 0.045);
-  --text: #1c1c1a;
-  --text-strong: #0a0a09;
-  --muted: #6a6a65;
-  --faint: #a6a6a0;
-  --line: rgba(0, 0, 0, 0.13);
-  --line-soft: rgba(0, 0, 0, 0.07);
-  --accent: #111110;
-  --accent-2: #3a3a38;
-  --accent-ink: #fbfbfa;
-  --grid: rgba(0, 0, 0, 0.04);
-  --glow: rgba(0, 0, 0, 0.045);
-  --spot: rgba(0, 0, 0, 0.045);
-  --shadow: 0 24px 54px -34px rgba(20, 20, 18, 0.28);
+  --bg: #faf7f2;
+  --bg-2: #f1ebe2;
+  --surface: rgba(92, 60, 26, 0.035);
+  --surface-2: rgba(92, 60, 26, 0.07);
+  --text: #292219;
+  --text-strong: #16100a;
+  --muted: #6e655a;
+  --faint: #a89c8d;
+  --line: rgba(92, 60, 26, 0.16);
+  --line-soft: rgba(92, 60, 26, 0.08);
+  --accent: #a05e21;
+  --accent-2: #7d4a1e;
+  --accent-ink: #fbf7f1;
+  --grid: rgba(92, 60, 26, 0.05);
+  --glow: rgba(160, 94, 33, 0.07);
+  --spot: rgba(160, 94, 33, 0.055);
+  --shadow: 0 24px 54px -34px rgba(60, 42, 20, 0.3);
 }
 
 /* ----------------------------- reset ----------------------------------- */
@@ -438,7 +438,7 @@ ul {
 .hero__intro .hl {
   color: var(--text-strong);
   font-weight: 500;
-  box-shadow: inset 0 -0.42em 0 var(--surface-2);
+  box-shadow: inset 0 -0.42em 0 color-mix(in srgb, var(--accent) 22%, transparent);
 }
 .hero__actions {
   display: flex;
@@ -1557,4 +1557,136 @@ ul {
     opacity: 1;
     animation: none;
   }
+}
+
+/* =========================================================================
+   v4: warm identity details — two-tone monogram, lead-card product shot,
+   and the opening sequence (logo intro).
+   ========================================================================= */
+
+/* the monogram's Y-tail carries the accent, everywhere the mark appears */
+.monogram__tail {
+  stroke: var(--accent);
+}
+
+/* lead project card: text + product screenshot */
+.project__split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(250px, 34%, 380px);
+  gap: clamp(20px, 3vw, 36px);
+  align-items: stretch;
+}
+.project__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.project__text .project__desc {
+  flex: 1;
+}
+.project__shot {
+  position: relative;
+  margin: 0;
+  align-self: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--bg-2);
+  box-shadow: var(--shadow);
+}
+.project__shot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.6s var(--ease);
+}
+.project--lead:hover .project__shot img {
+  transform: scale(1.03);
+}
+.project__badge--live {
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+@media (max-width: 680px) {
+  .project__split {
+    grid-template-columns: 1fr;
+  }
+  .project__shot {
+    order: -1;
+    align-self: stretch;
+  }
+}
+
+/* ------------------------------ intro ----------------------------------- */
+/* Pre-hydration curtain: html.intro is set before first paint (see
+   _document.tsx), so the page never flashes before the overlay mounts. */
+html.intro {
+  overflow: hidden;
+}
+html.intro::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: var(--bg);
+}
+
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  cursor: pointer;
+}
+.intro-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(46% 38% at 50% 46%, var(--glow), transparent 75%);
+  pointer-events: none;
+}
+.intro-overlay__inner {
+  display: grid;
+  justify-items: center;
+  gap: 26px;
+}
+.intro-overlay__mark {
+  color: var(--text-strong);
+}
+.intro-overlay__wordmark {
+  font-size: clamp(1.5rem, 4.5vw, 2.2rem);
+}
+.intro-overlay__kicker {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Hero load sequence holds while the intro plays (var set pre-paint). */
+.js .hero__main > *:nth-child(1) {
+  animation-delay: calc(var(--intro-hold, 0s) + 0.05s);
+}
+.js .hero__main > *:nth-child(2) {
+  animation-delay: calc(var(--intro-hold, 0s) + 0.13s);
+}
+.js .hero__main > *:nth-child(3) {
+  animation-delay: calc(var(--intro-hold, 0s) + 0.22s);
+}
+.js .hero__main > *:nth-child(4) {
+  animation-delay: calc(var(--intro-hold, 0s) + 0.31s);
+}
+.js .hero__photo {
+  animation-delay: calc(var(--intro-hold, 0s) + 0.2s);
+}
+.js .hero__now {
+  animation-delay: calc(var(--intro-hold, 0s) + 0.42s);
 }
